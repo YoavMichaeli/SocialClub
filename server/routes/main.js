@@ -1,3 +1,5 @@
+// In this part of the code we route to the pages of the app
+
 const express = require('express');
 const path = require('path'); // Import the path module
 
@@ -9,7 +11,6 @@ app.use(bodyParser.urlencoded({extended : true}))
 
 app.use(express.static('public'));
 
-// Routes to the right page
 router.get('', (req, res) => {
     // Use path.join to specify the correct file path
     res.sendFile(path.join(__dirname, '../../views/layouts/main.html'));
@@ -18,21 +19,7 @@ router.get('', (req, res) => {
 
 router.get('/about', (req, res) => {
     // Use path.join to specify the correct file path
-    res.sendFile(path.join(__dirname, '../../views/index.html'));
-});
-
-app.post('/calc', function(req,res){
-    var x = parseInt(req.body.x)
-
-
-    var result = x
-
-    res.end(`<html>
-                <body>
-                    The answer is ${result}. 
-                    <a href="../../views/index.html">reset</a>
-                </body>
-            </html>`)
+    res.sendFile(path.join(__dirname, '../../views/layouts/index.html'));
 });
 
 module.exports = router;
