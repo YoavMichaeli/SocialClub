@@ -8,6 +8,7 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({extended : true}))
 
 app.use(express.static('public'));
+app.use(express.static('../views'));
 
 // Routes to the right page
 router.get('', (req, res) => {
@@ -21,18 +22,5 @@ router.get('/about', (req, res) => {
     res.sendFile(path.join(__dirname, '../../views/index.html'));
 });
 
-app.post('/calc', function(req,res){
-    var x = parseInt(req.body.x)
-
-
-    var result = x
-
-    res.end(`<html>
-                <body>
-                    The answer is ${result}. 
-                    <a href="../../views/index.html">reset</a>
-                </body>
-            </html>`)
-});
 
 module.exports = router;
