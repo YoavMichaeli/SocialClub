@@ -27,4 +27,5 @@ router.get('/about', (req, res) => {
 //     res.sendFile(path.join(__dirname, '../../views/layouts/home.html'));
 // });
 
+
 module.exports = router;
