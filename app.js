@@ -22,15 +22,7 @@ const client = new MongoClient(process.env.MONGODB_URI, { useNewUrlParser: true,
 
 const postsCollection = client.db(process.env.DB_NAME).collection('posts');  
 
-// Endpoint to get all posts
-app.get('/posts', async (req, res) => {
-    try {
-        const posts = await postsCollection.find({}).toArray();
-        res.status(200).json(posts);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching posts', error: error.message });
-    }
-});
+
 
 // Endpoint to publish a new post
 app.post('/posts', async (req, res) => {
