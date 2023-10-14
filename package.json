@@ -1,32 +1,56 @@
 {
-  "name": "social-network",
-  "version": "1.0.0",
-  "description": "Private Social Network",
-  "main": "index.js",
+  "name": "SocialClub",
+  "version": "4.0.0",
+  "update": false,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "app.js",
-    "dev": "nodemon app.js"
+    "start": "node update.js; node ./execute/run.js",
+    "test": "mocha",
+    "postinstall": "opencollective-postinstall || true",
+    "app": "node update.js; node ./execute/run.js --app"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "connect-mongo": "^5.0.0",
-    "cookie-parser": "^1.4.6",
+    "apikeygen": "^1.1.0",
+    "array-tools": "1.8.6",
+    "bcrypt-nodejs": "0.0.3",
+    "chai": "^4.2.0",
+    "cloudinary": "1.22.0",
+    "cookie-parser": "^1.4.4",
+    "debug": "~2.6.9",
     "dotenv": "^16.3.1",
-    "ejs": "^3.1.9",
-    "express": "^4.18.2",
-    "express-ejs-layouts": "^2.5.1",
-    "express-session": "^1.17.3",
-    "html": "^1.0.0",
-    "jsonwebtoken": "^9.0.2",
-    "method-override": "^3.0.0",
-    "mongodb": "^6.1.0",
-    "mongoose": "^7.5.2"
+    "ejs": "^2.5.9",
+    "express": "~4.16.0",
+    "express-session": "^1.17.0",
+    "file-system": "^2.2.2",
+    "formidable": "^1.2.1",
+    "googleapis": "^39.2.0",
+    "guid": "0.0.12",
+    "http-errors": "~1.6.2",
+    "lodash": "^4.17.19",
+    "mocha": "^6.2.2",
+    "mongoose": "^5.7.9",
+    "morgan": "~1.9.0",
+    "mv": "2.1.1",
+    "newsapi": "^2.4.0",
+    "opencollective-postinstall": "^2.0.2",
+    "passport": "^0.4.0",
+    "passport-google-oauth": "^2.0.0",
+    "prompts": "^2.2.1",
+    "request": "2.88.0",
+    "socket.io": "^2.2.0",
+    "time-ago": "0.2.1"
   },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
+  "description": "A social media platform written in Node.js (the 5th time)",
+  "main": "./execute/run.js",
+  "keywords": [
+    "social",
+    "media",
+    "nodejs",
+    "express",
+    "mongodb",
+    "mongoose",
+    "platform"
+  ],
+  "optionalDependencies": {
+    "usage": "^0.7.1"
   }
 }
