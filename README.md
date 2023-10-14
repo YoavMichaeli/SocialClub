@@ -1,2 +1,3 @@
-# Social-Network
-Private Social Network 
+# SocialClub
+
+Private Social-Network platform
