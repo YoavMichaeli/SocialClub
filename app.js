@@ -1,74 +1,82 @@
-// This is our main app logic
+var createError = require("http-errors");
+var express = require("express");
+var path = require("path");
+var session = require("express-session");
+var bodyParser = require("body-parser");
+var cookieParser = require("cookie-parser");
+var logger = require("morgan");
+var fs = require("file-system");
 
-require('dotenv').config();
+var indexRouter = require("./routes/index");
+var usersRouter = require("./routes/users");
+var groupsRouter = require("./routes/groups");
+var graphRouter = require("./routes/graph");
+var accountRouter = require("./routes/auth");
+var meRouter = require("./routes/settings");
+var categoryRouter = require("./routes/category");
+var restApi = require("./routes/api/v1/index");
+var chatRouter = require("./routes/chat");
+var counterRouter = require("./controllers/counter");
 
-const express = require('express');
-const server = require('./server/server');
-const { MongoClient } = require('mongodb');
+var app = express();
 
-const app = express();
-const bodyParser = require('body-parser');
-app.use(bodyParser.json());  // To support JSON-encoded bodies
-const PORT = 5000 || process.env.PORT;
+app.conf = require("./config/app");
 
-app.use(express.static('public'));
-app.set('layout', './layouts/main');
+// view engine setup
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
 
-app.use('/', require('./server/routes/main'))
-
-
-const client = new MongoClient(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-
-
-const postsCollection = client.db(process.env.DB_NAME).collection('posts');  
-
-
-
-// Endpoint to publish a new post
-app.post('/posts', async (req, res) => {
-    try {
-        const post = req.body;
-        console.log(post);
-
-        const result = await postsCollection.insertOne(post);
-        res.status(201).json({ message: 'Post published successfully', postId: result.insertedId });
-    } catch (error) {
-        res.status(500).json({ message: 'Error publishing post', error: error.message });
-    }
-});
-
-client.connect()
-    .then(() => {
-        console.log("Connected to MongoDB");
-    })
-    .catch(error => {
-        console.error('Failed to connect to MongoDB', error);
-    });
-
-
-
-app.listen(PORT, () => {
-    console.log(`App listening on port ${PORT}`)
-});
-
-
-
-app.post('/calc', function(req,res){
-    var x = parseInt(req.body.x)
-    var y = parseInt(req.body.y)
-    var operation = req.body.operation
-
-    var result = server.calc(x,y,operation)    
-
-    res.end(`<html>
-                <body>
-                    The answer is ${result}. 
-                    <a href="/about">reset</a>
-                </body>
-            </html>`)
-})
-
-module.exports = {
-    app: app,
-    bodyParser: bodyParser
+var cooky = {
+  secret: "work hard",
+  resave: true,
+  expires: new Date() * 60 * 60 * 24 * 7,
+  saveUninitialized: true
 };
+
+app.sessionMiddleware = session(cooky);
+
+app.set("trust proxy", 1); // trust first proxy
+app.use(app.sessionMiddleware);
+app.use(
+  logger("common", {
+    stream: fs.createWriteStream(
+      __dirname.endsWith(".SocialClub")
+        ? __dirname + "/../data/out.log"
+        : __dirname + "/out.log",
+      { flags: "a" }
+    )
+  })
+);
+app.use(logger("tiny"));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "public")));
+app.use(counterRouter);
+app.use("/", indexRouter);
+app.use("/u", usersRouter);
+app.use("/groups", groupsRouter);
+app.use("/graph", graphRouter);
+app.use("/account", accountRouter);
+app.use("/me", meRouter);
+app.use("/api", restApi);
+app.use("/category", categoryRouter);
+app.use("/chat", chatRouter);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get("env") === "development" ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render("error");
+});
+
+module.exports = app;
