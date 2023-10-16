@@ -4,7 +4,7 @@ module.exports = function(req, res, next) {
   const date = new Date().toISOString().split("T")[0];
   if (req.session.today && req.session.today == date) {
     return next();
-  }
+  } 
   Analytics.findOne({ name: "visitors" }, function(err, res) {
     if (err || !res) {
       res = new Analytics({ name: "visitors", stats: [] });
