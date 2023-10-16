@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../head') -%>
+  <body ng-app="">
+    <div class="container-fluid">
+      <a href="/" class="float-left">
+        <h2>
+  	    	<img src="/images/logo/logo.png" class="logo">
+  	    	SocialClub
+  	    </h2>
+  </a>
+    </div>
+    <br>
+    <div class="container">
+    <input type="text" class="form-control" onkeyup="updateList(this.value);" placeholder="Search here..." />
+    <br>
+
+<label><b>Advanced User Search</b></label>
+<br>   
+<form class="form-inline">
+
+         <label class="text-muted">Last Name</label>
+         <input type="text" onkeyup="updateUserList();" placeholder="User's lastname" class="form-control" name="lastname">
+         <label class="text-muted">Country</label>
+         <input type="text" onkeyup="updateUserList();" placeholder="User's country" class="form-control" name="country">
+         <label class="text-muted">Year of birth</label>
+         <input type="text" onkeyup="updateUserList();" placeholder="Year of birth" class="form-control" name="yearOfBirth">
+       </form>
+<% if (userGroupsAdmin.length > 0 ) { %>
+ <form class ="form-inline">
+<br>
+ <label><b>Advanced Group Search - For Group Admins ONLY</b></label>
+<br>
+
+         <label class="text-muted">Description</label>
+         <input type="text" onkeyup="updateGroupList();" placeholder="Group's Description" class="form-control" name="description">
+         <label class="text-muted">Friends number</label>
+         <input type="text"  onkeyup="updateGroupList();" placeholder="Group's friends number" class="form-control" name="friendsNumber">
+         <label class="text-muted">Creation Month</label>
+         <input type="text" onkeyup="updateGroupList();" placeholder="Group's creation month" class="form-control" name="creationMonth">
+
+ </form>
+<% } %>
+ <br>
+    <ul class="list-group">
+      <li class="list-group-item list-group-item-primary">Total Users</li>
+           <li class="list-group-item">
+            Total - <b><%= users.length %></b> users, <b><%= groups.length %></b> groups and <b><%= chatsfriendsUsers.length %></b> chats
+         </li>
+
+   </ul>
+    <ul class="list-group">
+      <li class="list-group-item list-group-item-primary">Results</li>
+      <div id="user-list">
+      <% for(var i=0;i<users.length;i++) { %>
+         <li class="list-group-item">
+            <img src="<%= users[i].profile_pic %>" class="logo">
+            <b><a href="/u/<%= users[i].username %>" id="list-username"><%= users[i].username %> (User)</a></b>
+         </li>
+      <% } %>
+    </div>
+    <div id="groups-list">
+      <% for(var i=0;i<groups.length;i++) { %>
+         <li class="list-group-item">
+            <img src="<%= groups[i].profile_pic %>" class="logo">
+            <b><a href="/groups/<%= groups[i].name %>" id="group-name"><%= groups[i].name %> (Group)</a></b>
+         </li>
+      <% } %>
+    </div>
+    <div id="chats-list">
+      <% for(var i=0;i<chatsfriendsUsers.length;i++) { %>
+         <li class="list-group-item">
+            <img src="/images/logo/logo.png" class="logo">
+            <b><a href="/chat/<%= chatsfriendsUsers[i]._id%>" id="chat">Conversation With <%= chatsfriendsUsers[i].username %> (Chat Room)</a></b>
+         </li>
+      <% } %>
+    </div>
+
+   </ul>
+
+    <div id="notify_message" class=" notify_message-success">
+    	<center>Search for people on SocialClub...</center>
+    </div>
+    <%- include('../tabs') -%>
+    <%- include('../footer') -%>
+  </body>
+  
+   <script type="text/javascript" src="/javascripts/dom.js"></script>
+   <script type="text/javascript" src="/javascripts/search.js"></script>
+
+</html>
