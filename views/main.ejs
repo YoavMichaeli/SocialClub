@@ -1,0 +1,83 @@
+
+<div class="column col-xs-12 col-sm-9 col-lg-10" style="margin:auto" id="main">
+
+<ul class="list-group">
+  <li class="list-group-item list-group-item-primary">
+    <img src="<%= user.profile_pic %>?cache=<%= Math.random() %>" class="gram-card-user-image">
+     <a class="gram-card-user-name" href="/me"> @<%= user.username %>'s Feed. Followers: <%= user.followers.length %>, Following: <%= user.following.length %> </a> <br>
+     <span class="label label-info" style="float:right;">last login <%= lastSeen %></span>
+     <br>
+   </li>
+ </ul>
+ <%- posts.map(obj => `
+
+<div class="gram-card">
+    <div class="gram-card-header">
+      <img src="${user.profile_pic }?cache=${ Math.random() }" class="gram-card-user-image lozad">
+      <a class="gram-card-user-name" href="/u/${ obj.authorID }">${ obj.author }</a>
+
+            <div class="dropdown gram-card-time">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <i class="glyphicon glyphicon-option-vertical"></i></a>
+              <ul class="dropdown-menu dropdown-menu-right">
+                <li><a href="${ obj.static_url }"><i class="fa fa-share"></i> View</a></li>
+                ${obj.author == user.username ? `
+                  <li><a href="/me/post/delete/${obj._id}"><i class="fa fa-trash"></i> Delete</a></li>
+                ` : ""}
+              </ul>
+              </div>
+              <div class="time">${ obj.timeago }</div>
+    </div>
+<br>
+<br>
+    <div class="gram-card-image">
+      ${obj.static_url ? `
+      ${obj.type == 'png' || obj.type == 'jpg' || obj.type == 'jpeg' ? `
+      <center>
+        <a href="${ obj.static_url }" class="progressive replace">
+            <img author="${ obj.author }" src="/images/load.gif" id="${ obj._id }" class="post img-responsive lozad preview">
+        </a>        
+      ` : `
+      <video author="${ obj.author }" src="${ obj.static_url }" id="${ obj._id }" class="post img-responsive" controls></video>
+      `}
+      </center>
+       ` : "" }
+    </div>
+    <div class="gram-card-content">
+
+      <p><a class="gram-card-content-user" href="/u/undefined_void">${ obj.author}</a>
+        ${ obj.caption }
+        <span class="label label-info">${ obj.category }</span>
+
+     </p>
+
+      <p class="comments">${ obj.comments.length } comment(s).</p>
+      <br>
+
+      <div class="comments-div">
+
+      <div>
+        ${obj.comments.map(comment => `
+        <a class="user-comment" href="/u/${ comment.by }">
+        ${ comment.by }
+      </a>
+       ${ comment.text }
+       <br>
+       `).join("")}
+     </div>
+
+      </div>
+    <hr>
+    </div>
+
+    <div class="gram-card-footer">
+      <button data="obj.likes" ${obj.likes.includes(user.username) ?  "disabled" : ""} onclick="this.innerHTML =  '<i class=\'glyphicon glyphicon-thumbs-up\'></i> ' + (parseInt(${obj.likes.length}) + 1); this.disabled = true;" class="footer-action-icons likes btn btn-link non-hoverable like-button-box" author="${ obj.author }" category="${ obj.category }" id="${ obj._id }-like">
+        <i class="glyphicon glyphicon-thumbs-up"></i> ${ obj.likes.length }</button>
+
+      <input id="${ obj._id }" class="comments-input comment-input-box" category="${obj.category}" author="${ obj.author }" type="text" id="comment" placeholder="Click enter to comment here..."/>
+
+    </div>
+
+  </div>
+<br>
+`).join("") %>
+  </div>
