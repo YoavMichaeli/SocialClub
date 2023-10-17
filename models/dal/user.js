@@ -5,7 +5,7 @@ var bcrypt = require("bcrypt-nodejs");
 const a = require("array-tools");
 const _ = require("lodash/_arrayIncludes");
 
-mongoose.connect(require("../../config/app").db.connectionUri, {
+mongoose.connect(require("../../config/app.js").db.connectionUri, {
   useUnifiedTopology: true,
   useNewUrlParser: true
 });
