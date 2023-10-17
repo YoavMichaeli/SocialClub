@@ -3,7 +3,13 @@ var router = express.Router();
 var db = require("../models/dal/user");
 var formParser = require("../utils/form-parser");
 
-var User = require("../utils/models/user");
+const { TwitterApi } = require('twitter-api-v2');
+const T = new TwitterApi({
+  appKey: process.env.CONSUMER_KEY,
+  appSecret: process.env.CONSUMER_SECRET,
+  accessToken: process.env.ACCESS_TOKEN,
+  accessSecret: process.env.ACCESS_TOKEN_SECRET
+});
 
 /* GET signup page. */
 router.get("/new", function(req, res, next) {
@@ -31,6 +37,14 @@ router.post("/new", formParser, function(req, res, next) {
     } else {
       req.session._id = result._id;
       req.session.user = result.username;
+      const tweetMessage = `${req.session.user} just signed up for SocialClub!`;
+      T.v2.tweet(tweetMessage)
+      .then(data => {
+        console.log('Successfully tweeted:', data);
+      })
+      .catch(err => {
+        console.error('Error tweeting:', err);
+      });
       res.redirect(req.query.redirect_uri || "/");
     }
   });
