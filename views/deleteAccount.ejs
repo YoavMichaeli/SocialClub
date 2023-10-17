@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <%- include('./head') -%>
+
+  <body>
+    <div class="container-fluid">
+      <a href="/" class="float-left">
+        <h2>
+          <img src="/images/logo/logo.png" class="logo">
+          SocialClub
+        </h2>
+      </a>
+
+    </div>
+    <br>
+  <div class="col-sm-6 col-sm-offset-3">
+        <label class="text-muted">Are you sure?</label>
+        <br>
+        <button onclick="deleteUserAccount('<%= user._id %>')" type="submit" class="btn btn-success btn-action">Delete My Account</button>
+        <button id="cancelButton" type="submit" class="btn btn-success btn-action">Cancel</button>
+   </div>
+
+   <script>
+    document.getElementById('cancelButton').addEventListener('click', () => {
+      window.location.href = '/';
+    });
+  </script>
+
+<div id="notify_message" class="notify_message-success">
+    <center></center>
+</div>
+
+  </body>
+  <script type="text/javascript" src="/javascripts/deleteAccount.js"></script>
+  <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+  <script type="text/javascript" src="/javascripts/dom.js"></script>
+  <script type="text/javascript" src="/javascripts/socket.io.js"></script>
+  <script type="text/javascript" src="/javascripts/connect.js"></script>
+</html>

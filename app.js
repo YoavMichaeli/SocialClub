@@ -13,7 +13,6 @@ var groupsRouter = require("./routes/groups");
 var graphRouter = require("./routes/graph");
 var accountRouter = require("./routes/auth");
 var meRouter = require("./routes/settings");
-var categoryRouter = require("./routes/category");
 var restApi = require("./routes/api/v1/index");
 var chatRouter = require("./routes/chat");
 var counterRouter = require("./controllers/counter");
@@ -60,7 +59,6 @@ app.use("/graph", graphRouter);
 app.use("/account", accountRouter);
 app.use("/me", meRouter);
 app.use("/api", restApi);
-app.use("/category", categoryRouter);
 app.use("/chat", chatRouter);
 
 // catch 404 and forward to error handler
