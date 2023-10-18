@@ -71,7 +71,39 @@ router.get("/", function(req, res, next) {
   });
 });
 
+function fetchWeatherData(country, callback) {
+  const weatherstackEndpoint = `http://api.weatherstack.com/current?access_key=${process.env.WEATHERSTACK_API_KEY}&query=${country}`;
 
+  
+  http.get(weatherstackEndpoint, (weatherResp) => {
+      let weatherData = '';
+
+      weatherResp.on('data', (chunk) => {
+          weatherData += chunk;
+      });
+
+      weatherResp.on('end', () => {
+          const parsedWeather = JSON.parse(weatherData);
+          if (!parsedWeather.success && parsedWeather.error) {
+              console.error("Weatherstack API error:", parsedWeather.error.info);
+              callback(null);
+          } else {
+              const weather = {
+                  temperature: parsedWeather.current.temperature,
+                  description: parsedWeather.current.weather_descriptions[0],
+                  localtime: parsedWeather.location.localtime,
+                  locationName: parsedWeather.location.name
+              };
+              callback(weather);
+          }
+      });
+
+  }).on("error", (err) => {
+      console.log("Error fetching weather data: " + err.message);
+      callback(null);
+  });
+}
 
 
 module.exports = router;
+
