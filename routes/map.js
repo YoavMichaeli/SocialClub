@@ -5,6 +5,8 @@ var db = require("../utils/handlers/user");
 var group = require("../utils/handlers/group");
 var formParser = require("../utils/form-parser");
 const https = require('https');
+const http = require('http');
+
 
 
 router.get("/", function(req, res, next) {
@@ -57,53 +59,56 @@ router.get("/", function(req, res, next) {
       });
       
       group.getAll((err, groups) => {
-        db.findById(req.session._id, (err, user) => {
-          res.render("map", {
-            userGroupsAdmin: user.groupsAdmin,
-            title: req.app.conf.name,
-            users: users,
-            groups: groups, 
-            apiKey: process.env.GOOGLE_MAPS_API_KEY
-          });
+        db.findById(req.session._id, (err, currentUser) => {
+            // Fetch weather data for the current user
+            fetchWeatherData(currentUser.country, (weather) => {
+                res.render("map", {
+                    userGroupsAdmin: currentUser.groupsAdmin,
+                    title: req.app.conf.name,
+                    users: users,
+                    groups: groups,
+                    apiKey: process.env.GOOGLE_MAPS_API_KEY,
+                    weather: weather  
+                });
+            });
         });
-      });
+    });
     }
   });
 });
 
+
 function fetchWeatherData(country, callback) {
-  const weatherstackEndpoint = `http://api.weatherstack.com/current?access_key=${process.env.WEATHERSTACK_API_KEY}&query=${country}`;
+    const weatherstackEndpoint = `http://api.weatherstack.com/current?access_key=${process.env.WEATHERSTACK_API_KEY}&query=${country}`;
 
-  
-  http.get(weatherstackEndpoint, (weatherResp) => {
-      let weatherData = '';
+    http.get(weatherstackEndpoint, (weatherResp) => {
+        let weatherData = '';
 
-      weatherResp.on('data', (chunk) => {
-          weatherData += chunk;
-      });
+        weatherResp.on('data', (chunk) => {
+            weatherData += chunk;
+        });
 
-      weatherResp.on('end', () => {
-          const parsedWeather = JSON.parse(weatherData);
-          if (!parsedWeather.success && parsedWeather.error) {
-              console.error("Weatherstack API error:", parsedWeather.error.info);
-              callback(null);
-          } else {
-              const weather = {
-                  temperature: parsedWeather.current.temperature,
-                  description: parsedWeather.current.weather_descriptions[0],
-                  localtime: parsedWeather.location.localtime,
-                  locationName: parsedWeather.location.name
-              };
-              callback(weather);
-          }
-      });
+        weatherResp.on('end', () => {
+            const parsedWeather = JSON.parse(weatherData);
+            if (!parsedWeather.success && parsedWeather.error) {
+                console.error("Weatherstack API error:", parsedWeather.error.info);
+                callback(null);
+            } else {
+                const weather = {
+                    temperature: parsedWeather.current.temperature,
+                    description: parsedWeather.current.weather_descriptions[0],
+                    localtime: parsedWeather.location.localtime,
+                    locationName: parsedWeather.location.name
+                };
+                callback(weather);
+            }
+        });
 
-  }).on("error", (err) => {
-      console.log("Error fetching weather data: " + err.message);
-      callback(null);
-  });
+    }).on("error", (err) => {
+        console.log("Error fetching weather data: " + err.message);
+        callback(null);
+    });
 }
 
 
 module.exports = router;
-
