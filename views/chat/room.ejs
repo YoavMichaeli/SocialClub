@@ -21,11 +21,38 @@
     <div class="container" id="mainPage">
       <ul class="list-group">
       <% if(room.chats.length < 1) { %>
-        <div class="row">
-          <div class="col-md-12">
-            Send a message below!
-          </div>
-        </div>
+        <canvas id="myCanvas" width="150" height="175"></canvas>
+        <script>
+          const canvas = document.getElementById('myCanvas');
+          const ctx = canvas.getContext('2d');
+      
+          const text1 = "Type your";
+          const text2 = "message here";
+      
+          ctx.font = '24px Arial';
+          ctx.fillStyle = '#333'; 
+          ctx.textAlign = 'center';
+      
+          const totalTextHeight = parseInt(ctx.font) * 2;
+      
+          const startingY = (canvas.height - totalTextHeight) / 2 + parseInt(ctx.font);
+      
+          ctx.fillText(text1, canvas.width / 2, startingY);
+          ctx.fillText(text2, canvas.width / 2, startingY + parseInt(ctx.font));
+      
+          const arrowWidth = 20;
+          const arrowHeight = 30;
+      
+          const arrowX = canvas.width / 2;
+          const arrowY = startingY + parseInt(ctx.font) + 10;  // 10 is the gap between the text and the arrow
+      
+          ctx.beginPath();
+          ctx.moveTo(arrowX - arrowWidth / 2, arrowY);
+          ctx.lineTo(arrowX + arrowWidth / 2, arrowY);
+          ctx.lineTo(arrowX, arrowY + arrowHeight);
+          ctx.closePath();
+          ctx.fill();
+      </script>
       <% } %>
   <% for(var i=0;i<room.chats.length;i++) {
     if(room.chats[i].by && room.chats[i].by.profile_pic) { %>
