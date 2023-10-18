@@ -751,4 +751,21 @@ MEDIA QUERIES FOR SMALL TABLETS AND MOBILE PHONES
     .customize-theme .card {
         width: 80vw; 
     }
+
+    #map {
+        width: 75%;
+        height: 600px; /* Adjust this value as needed */
+        margin: auto;
+      }
+      
+      .text-center {
+        text-align: center;
+      }
+      .weather-info {
+        background-color: rgba(0,0,0,0.05);
+        border-radius: 5px;
+        padding: 5px 10px;
+        display: inline-block; 
+        margin-top: 15px; 
+      }
 }
