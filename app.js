@@ -16,6 +16,9 @@ var meRouter = require("./routes/settings");
 var restApi = require("./routes/api/v1/index");
 var chatRouter = require("./routes/chat");
 var counterRouter = require("./controllers/counter");
+require('dotenv').config();
+var mapRouter = require('./routes/map');
+
 
 var app = express();
 
@@ -55,6 +58,7 @@ app.use(counterRouter);
 app.use("/", indexRouter);
 app.use("/u", usersRouter);
 app.use("/groups", groupsRouter);
+app.use('/map', mapRouter);
 app.use("/graph", graphRouter);
 app.use("/account", accountRouter);
 app.use("/me", meRouter);
