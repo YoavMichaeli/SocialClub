@@ -1,0 +1,56 @@
+<<!DOCTYPE html>
+<html>
+  <%- include('./head') -%>
+
+  <body>
+    <div class="container-fluid">
+        <a href="/" class="float-left">
+        <h2>
+            <img src="/images/logo/logo.png" class="logo">
+            SocialClub
+        </h2>
+        </a>
+
+    </div>
+    <br>
+    <div class="header text-center">
+        <h1>Map</h1>
+        <p>Where SocialClub users come from</p>
+      </div>
+    <div id="map"></div>
+    <div id="userData" data-users='<%= JSON.stringify(users) %>'></div>
+    <script>
+        function initMap() {
+        var options = {
+            zoom: 5,
+            center: {lat: 32.08, lng: 34.80}
+        };
+
+        var map = new google.maps.Map(document.getElementById('map'), options);
+        var usersData = JSON.parse(document.getElementById('userData').getAttribute('data-users'));
+
+        usersData.forEach(function(user) {
+            if (user.lat && user.lng) {
+            new google.maps.Marker({
+                position: { lat: parseFloat(user.lat), lng: parseFloat(user.lng) },
+                map: map,
+                title: user.username
+            });
+            }
+        });
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>&callback=initMap"></script>
+    <div class="text-center">
+        <div class="weather-info">
+            <span><strong>Location info:</strong></span><br>
+            <span>You are at: <%= weather.locationName %></span><br>
+            <span>The temperature is: <%= weather.temperature %> °C</span><br>
+            <span>The sky is: <%= weather.description %></span><br>
+            <span>And the local time is: <%= weather.localtime %></span>
+        </div>
+    </div>
+
+
+  </body>
+</html>
