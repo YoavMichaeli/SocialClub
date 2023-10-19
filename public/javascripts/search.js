@@ -14,16 +14,14 @@ function updateList(query) {
         for (var i = 0; i < data.length; i++) {
           console.log(data)
           if (data[i]["friendsNumber"] == undefined && data[i]["chatFriendUserId"] == undefined){
-            console.log("in user")
             $("#user-list").append(`<li class="list-group-item">
             <img src="${data[i].profile_pic}" class="logo">
             <b><a href="/u/${data[i].username}" id="list-username">${data[i].username} (User)</a></b>
          </li>`)
           }else if (data[i]["description"]){
-            console.log("in user")
             $("#groups-list").append(`<li class="list-group-item">
             <img src="${data[i].profile_pic}" class="logo">
-            <b><a href="/u/${data[i].name}" id="group-name">${data[i].name} (Group)</a></b>
+            <b><a href="/groups/${data[i].name}" id="group-name">${data[i].name} (Group)</a></b>
          </li>`)
           } else if (data[i]["chatFriendUserId"]){
             console.log("in chat")
@@ -106,7 +104,7 @@ function updateGroupList() {
     for (var i = 0; i < data.length; i++) {
       $("#groups-list").append(`<li class="list-group-item">
       <img src="${data[i].profile_pic}" class="logo">
-      <b><a href="/u/${data[i].name}" id="group-name">${data[i].name} (Group)</a></b>
+      <b><a href="/groups/${data[i].name}" id="group-name">${data[i].name} (Group)</a></b>
    </li>`)
 
     }

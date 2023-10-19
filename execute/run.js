@@ -5,7 +5,7 @@
  */
 process.title = "SocialClub";
 
-var app = require("d:/Social-Network/app");
+var app = require("../app");
 var io = require("socket.io");
 var debug = require("debug")("v2.0.0:server");
 var http = require("http");

@@ -1,5 +1,8 @@
 var express = require("express");
 var router = express.Router();
+var db = require("../models/dal/user");
+var formParser = require("../utils/form-parser");
+var mongoose = require("mongoose");
 var User = require("../models/user");
 var Room = require("../models/room");
 
@@ -47,7 +50,7 @@ router.get("/:userid", function(req, res, next) {
         req.session.socket.room = possibleRoomId;
         var newChatRoom = new Room({
           id: possibleRoomId,
-          users: [user._id, req.session._id],
+          users: [user._id.toString(), req.session._id],
           chats: []
         });
         newChatRoom.save((err, done) => {
@@ -56,6 +59,49 @@ router.get("/:userid", function(req, res, next) {
             room: done,
             session: req.session,
             reciever: user
+          });
+        });
+      }
+    });
+  });
+});
+
+
+
+router.delete("/:userid", function(req, res, next) {
+  if (req.session._id == req.params.userid)
+    return res.render("error", {
+      message: "Can't chat with yourself...",
+      error: {
+        status: 400,
+        stack: "Can't chat with yourself."
+      }
+    });
+  User.findOne({ _id: req.params.userid }).exec((error, user) => {
+    if (!user) return res.status(404).send("No user found!");
+    req.session.socket = {};
+    Room.find({}).exec((err, chatRooms) => {
+      var chatRoom = chatRooms.find(
+        r =>
+          r.users[0] &&
+          r.users[1] &&
+          ((r.users[0].toString() == user._id.toString() &&
+            r.users[1].toString() == req.session._id) ||
+            (r.users[1].toString() == user._id.toString() &&
+              r.users[0].toString() == req.session._id))
+      );
+      if (chatRoom) {
+        chatRoom.chats = []
+        chatRoom.save((err, done) => {
+          res.render("chat/index", {
+            title: req.app.conf.name
+          });
+        });
+      } else {
+        User.find({}).exec((error, users) => {
+          res.render("chat/index", {
+            title: req.app.conf.name,
+            users: users
           });
         });
       }

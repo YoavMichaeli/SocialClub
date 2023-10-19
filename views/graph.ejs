@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+  <%- include('./head') -%>
+  <head>
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v7.min.js" ></script>
+  
+  </head>
+  <body>
+    <%- include('./navbar')	-%>
+    <br>
+
+
+<h1 style="padding-top: 10rem; justify-content: center; display: flex; font-size:100px">Statistics</h1>
+
+    <div id="graph-container" style="display: flex; align-items: center; justify-content: center; margin:4rem"></div>
+
+    <div id="graph-amount" style="display: flex; align-items: center; justify-content: center;margin:4rem"></div>
+
+    <div id="graph-address" style="display: flex; align-items: center; justify-content: center;margin:4rem"></div>
+
+<script>
+
+
+
+getFriendsPerGroupGraph() 
+getUsersPerCountryGraph()
+
+function getFriendsPerGroupGraph(){
+    fetch('/graph/groupsFriendsNumber') //Using the fetch api 
+    .then(res => res.json())
+    .then( (groups) => {
+    data = groups.map(group => ({
+    groupName: group.name,
+    friendsNumber: group.friendsNumber
+    }));
+
+  console.log(data)
+
+  var margin = { top: 40, right: 40, bottom: 100, left: 100 },
+      width = 960 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom;
+    
+    // Set the ranges for the x-axis and y-axis
+    var x = d3.scaleBand().range([0, width]).padding(0.1);
+    var y = d3.scaleLinear().range([height, 0]);
+    
+    // Create the SVG element and append it to the body of the page
+    var svg = d3
+      .select("#graph-container")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+    // Map the data to the x-axis and y-axis scales
+    x.domain(data.map(d => d.groupName));
+    y.domain([0, d3.max(data, d => Math.ceil(d.friendsNumber))]);
+    
+    // Create the bars for the chart
+    svg
+      .selectAll(".bar")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("class", "bar")
+      .attr("x", (d) => x(d.groupName))
+      .attr("width", x.bandwidth())
+      .attr("y", (d) => y(Math.round(d.friendsNumber)))
+      .attr("height",(d) => height - y(Math.round(d.friendsNumber)))
+      .attr("fill","#6B27D9")
+    
+    
+    // Add the x-axis to the chart
+    svg
+      .append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x))
+      .attr("font-size","20px");
+    
+    // Add the y-axis to the chart
+    svg.append("g")
+    .call(d3.axisLeft(y))
+    .attr("font-size","20px");
+    
+    
+    //Add x - Axis title
+    
+    svg.append("text")
+       .attr("transform", "translate(" + (width/2) + " ," + (height + margin.top + 20) + ")")
+       .style("text-anchor", "right")
+       .style("text-size","20px")
+       .attr("font-family","Helvetica")
+       .attr("font-weight","bold")
+       .text("Group Name");
+    
+    
+    svg.append("text")
+       .attr("transform", "rotate(-90)")
+       .attr("y", 0 - margin.left)
+       .attr("x", 0 - (height / 2))
+       .attr("dy", "1em")
+       .style("text-anchor", "middle")
+       .attr("font-family","Helvetica")
+       .attr("font-weight","bold")
+       .text("Friends Number");
+    
+    
+    
+    
+    // Add the chart title
+    svg
+      .append("text")
+      .attr("x", width / 2)
+      .attr("y", 0 - margin.top / 2)
+      .attr("text-anchor", "middle")
+      .attr("font-family","Helvetica")
+      .attr("font-weight","bold")
+      .text("Friends Number Per Group");
+      
+  
+  
+})
+}
+
+// async function getCounts(){
+
+//   fetch('/graph/products') //Using the fetch api 
+//     .then(res => res.json())
+//     .then( async (aggProducts) => {
+        
+//      data = Object.values(aggProducts)[0]
+
+//   var margin = { top: 40, right: 40, bottom: 100, left: 100 },
+//       width = 960 - margin.left - margin.right,
+//       height = 500 - margin.top - margin.bottom;
+    
+//     // Set the ranges for the x-axis and y-axis
+//     var x = d3.scaleBand().range([0, width]).padding(0.1);
+//     var y = d3.scaleLinear().range([height, 0]);
+    
+//     // Create the SVG element and append it to the body of the page
+//     var svg = d3
+//       .select("#graph-amount")
+//       .append("svg")
+//       .attr("width", width + margin.left + margin.right)
+//       .attr("height", height + margin.top + margin.bottom)
+//       .append("g")
+//       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        
+//     // Map the data to the x-axis and y-axis scales
+//     x.domain(data.map((d)=>d.Title));
+//     y.domain([0, d3.max(data, d => d.AmountAvailable)]);
+    
+//     // Create the bars for the chart
+//     svg
+//       .selectAll(".bar")
+//       .data(data)
+//       .enter()
+//       .append("rect")
+//       .attr("class", "bar")
+//       .attr("x", (d) => x(d.Title))
+//       .attr("width", x.bandwidth())
+//       .attr("y", (d) => y(d.AmountAvailable))
+//       .attr("height",(d) => height - y(d.AmountAvailable))
+//       .attr("fill","#6B27D9")
+    
+    
+//     // Add the x-axis to the chart
+//     svg
+//       .append("g")
+//       .attr("transform", "translate(0," + height + ")")
+//       .call(d3.axisBottom(x))
+//       .attr("font-size","20px");
+    
+//     // Add the y-axis to the chart
+//     svg.append("g")
+//     .call(d3.axisLeft(y))
+//     .attr("font-size","20px");
+    
+    
+//     //Add x - Axis title
+    
+//     svg.append("text")
+//        .attr("transform", "translate(" + (width/2) + " ," + (height + margin.top + 20) + ")")
+//        .style("text-anchor", "right")
+//        .style("text-size","20px")
+//        .attr("font-family","Helvetica")
+//        .attr("font-weight","bold")
+//        .text("Product");
+    
+    
+//     svg.append("text")
+//        .attr("transform", "rotate(-90)")
+//        .attr("y", 0 - margin.left)
+//        .attr("x", 0 - (height / 2))
+//        .attr("dy", "1em")
+//        .style("text-anchor", "middle")
+//        .attr("font-family","Helvetica")
+//        .attr("font-weight","bold")
+//        .text("Amount Available");
+    
+    
+    
+    
+//     // Add the chart title
+//     svg
+//       .append("text")
+//       .attr("x", width / 2)
+//       .attr("y", 0 - margin.top / 2)
+//       .attr("text-anchor", "middle")
+//       .attr("font-family","Helvetica")
+//       .attr("font-weight","bold")
+//       .text("Amount Of Products Available");
+      
+// })
+
+// }
+
+
+function getUsersPerCountryGraph(){
+
+  fetch('/graph/usersCountries') //Using the fetch api 
+    .then(res => res.json())
+    .then((aggregateUsers) => {
+      let dataUsers = Object.values(aggregateUsers)[0]
+
+    data = dataUsers.map((result) => ({
+    country: Object.values(result._id).join(""),
+    usersfromCountry: result.usersfromCountry
+    }))
+        
+     data = Object.values(data)
+
+     console.log(data)
+
+  var margin = { top: 40, right: 40, bottom: 100, left: 100 },
+      width = 960 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom;
+    
+    // Set the ranges for the x-axis and y-axis
+    var x = d3.scaleBand().range([0, width]).padding(0.1);
+    var y = d3.scaleLinear().range([height, 0]);
+    
+    // Create the SVG element and append it to the body of the page
+    var svg = d3
+      .select("#graph-address")
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Map the data to the x-axis and y-axis scales
+    x.domain(data.map((d)=>d.country));
+    y.domain([0, d3.max(data, d => d.usersfromCountry)]);
+    
+    // Create the bars for the chart
+    svg
+      .selectAll(".bar")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("class", "bar")
+      .attr("x", (d) => x(d.country))
+      .attr("width", x.bandwidth())
+      .attr("y", (d) => y(d.usersfromCountry))
+      .attr("height",(d) => height - y(d.usersfromCountry))
+      .attr("fill","#6B27D9")
+    
+    
+    // Add the x-axis to the chart
+    svg
+      .append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x))
+      .attr("font-size","20px");
+    
+    // Add the y-axis to the chart
+    svg.append("g")
+    .call(d3.axisLeft(y))
+    .attr("font-size","20px");
+    
+    
+    //Add x - Axis title
+    
+    svg.append("text")
+       .attr("transform", "translate(" + (width/2) + " ," + (height + margin.top + 20) + ")")
+       .style("text-anchor", "right")
+       .style("text-size","20px")
+       .attr("font-family","Helvetica")
+       .attr("font-weight","bold")
+       .text("Country");
+    
+    
+    svg.append("text")
+       .attr("transform", "rotate(-90)")
+       .attr("y", 0 - margin.left)
+       .attr("x", 0 - (height / 2))
+       .attr("dy", "1em")
+       .style("text-anchor", "middle")
+       .attr("font-family","Helvetica")
+       .attr("font-weight","bold")
+       .text("Amount of users");
+    
+    
+    
+    
+    // Add the chart title
+    svg
+      .append("text")
+      .attr("x", width / 2)
+      .attr("y", 0 - margin.top / 2)
+      .attr("text-anchor", "middle")
+      .attr("font-family","Helvetica")
+      .attr("font-weight","bold")
+      .text("Amount of users Per Country");
+      
+})
+
+
+}
+
+
+ 
+    </script>
+
+  </body>
+
+  
+</html>

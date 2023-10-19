@@ -37,7 +37,8 @@
     "prompts": "^2.2.1",
     "request": "2.88.0",
     "socket.io": "^2.2.0",
-    "time-ago": "0.2.1"
+    "time-ago": "0.2.1",
+    "twitter-api-v2": "^1.15.2"
   },
   "description": "A social media platform written in Node.js (the 5th time)",
   "main": "./execute/run.js",

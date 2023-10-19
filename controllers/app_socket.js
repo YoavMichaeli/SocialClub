@@ -1,7 +1,7 @@
 const io = require("socket.io");
-const server = require("../../bin/www").server;
+const server = require("../execute/run.js").server;
 const sio = io(server, { path: "/app" });
-const Users = require("../models/dal/user");
+const Users = require("../models/dal/group");
 const ago = require("time-ago").ago;
 const usage = require("usage");
 const os = require("os");
@@ -23,7 +23,7 @@ sio.on("connection", function(socket) {
       return;
     }
     socket.authenticated = true;
-    socket.emit("correct_password", password, require("../config/app"));
+    socket.emit("correct_password", password, require("../../config/app"));
     Users.getAll(function(err, users) {
       users.forEach(u => {
         u.password = null;
